@@ -5,6 +5,15 @@
     String fullName = request.getParameter("full_name");
     String email = request.getParameter("email");
     String major = request.getParameter("major");
+    System.out.println(email);
+
+    if (email != null && !email.isEmpty()) {
+        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+        // Invalid email format
+            response.sendRedirect("add_student.jsp?error=Invalid email format");
+            return;
+        }
+    }
     
     if (idParam == null || fullName == null || fullName.trim().isEmpty()) {
         response.sendRedirect("list_students.jsp?error=Invalid data");
