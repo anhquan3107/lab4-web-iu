@@ -75,33 +75,46 @@
 </head>
 <body>
     <%!
-    public int getTotalRecords() {
-        int total = 0;
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/student_management",
-                "root",
-                "anhquan3107"
-            );
-            String countSql = "SELECT COUNT(*) FROM students";
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(countSql);
-            if (rs.next()) {
-                total = rs.getInt(1);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try { if (rs != null) rs.close(); } catch (SQLException ignored) {}
-            try { if (stmt != null) stmt.close(); } catch (SQLException ignored) {}
-            try { if (conn != null) conn.close(); } catch (SQLException ignored) {}
+public int getTotalRecords(){
+    int total = 0;
+    Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+
+    try {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        conn = DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/student_management",
+            "root",
+            "anhquan3107"
+        );
+
+        String sql = "SELECT COUNT(*) FROM students";
+        pstmt = conn.prepareStatement(sql);
+        rs = pstmt.executeQuery();
+
+        if (rs.next()) {
+            total = rs.getInt(1);
         }
-        return total;
+
+    } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
+    return total;
+}
+
+    
     %>
     <%
         String sortBy = request.getParameter("sort");
